@@ -13,6 +13,11 @@ from .models import (
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    # def to_representation(self, instance:Course):
+    #     origin=  super(CourseSerializer, self).to_representation(instance)
+    #     origin["xm"] = instance.create_teacher.name
+    #     origin["xf"] = instance.credit
+    #     return origin
     class Meta:
         model = Course
         fields = '__all__'
@@ -53,7 +58,7 @@ class ScoreSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups', 'name', 'identity']
+        fields = ['url', 'username', 'email', 'groups', 'name', 'identity','pls','cls']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):

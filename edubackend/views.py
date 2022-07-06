@@ -1,9 +1,14 @@
+import django
 from django.shortcuts import render
 
 # Create your views here.
 from django.contrib.auth.models import Group
 from rest_framework import viewsets
 from rest_framework import permissions
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
+from django.http.response import JsonResponse
 from edubackend.serializers import (
     UserSerializer,
     GroupSerializer,
@@ -24,10 +29,26 @@ from .models import (
     Score
 )
 
+def getCsrfToken(request):
+    res = {
+        'csrftoken':django.middleware.csrf.get_token(request)
+    }
+    return JsonResponse(res)
+
 
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
+    @action(detail=True)
+    def getDetail(self,request:Request,*args,**kwargs):
+        Obj = self.get_object()
+        # request.user.identity
+        res={}
+        # Obj = Course()
+        # EduClass.objects.filter()
+        res["xm"] = Obj.create_teacher.name
+        # res[""]
+        return  Response(res)
 
 
 class EduClassViewSet(viewsets.ModelViewSet):
@@ -62,7 +83,6 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
-
 
 class GroupViewSet(viewsets.ModelViewSet):
     """

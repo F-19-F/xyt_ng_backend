@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-_pe=hotrq&19!w41x%dh!4=5i7#_e)$#%l18=6d)+eh(ir6d^3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 # Application definition
 
@@ -36,9 +36,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 跨域
     "corsheaders",
+    # drf框架
     'rest_framework',
+    'rest_framework.authtoken',
+    # 主app
     'edubackend',
+    # token认证
+    'dj_rest_auth'
 
 ]
 
@@ -125,8 +131,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # token认证必须设置这个参数，不然报错
+        'rest_framework.authentication.TokenAuthentication',
+    )
 }
+# import rest_framework.authentication
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # simple_ui
 SIMPLEUI_HOME_INFO = False
