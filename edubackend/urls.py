@@ -3,6 +3,13 @@ from rest_framework import routers
 from edubackend import views
 
 router = routers.DefaultRouter()
+router.register(r'course',views.CourseViewSet)
+router.register(r'educlass',views.EduClassViewSet)
+router.register(r'peopleclass',views.PeopleClassViewSet)
+router.register(r'work',views.WorkViewSet)
+router.register(r'answer',views.AnswerViewSet)
+router.register(r'score',views.ScoreViewSet)
+
 # router.register(r'users', views.userStudentViewset)
 
 # Wire up our API using automatic URL routing.

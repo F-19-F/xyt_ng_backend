@@ -12,6 +12,41 @@ from .models import (
 )
 
 
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+
+class EduClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EduClass
+        fields = '__all__'
+
+
+class PeopleClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PeopleClass
+        fields = '__all__'
+
+
+class WorkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Work
+        fields = '__all__'
+
+
+class AnswerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Answer
+        fields = '__all__'
+
+
+class ScoreSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Score
+        fields = '__all__'
+
 
 # class userStudentSerializer(serializers.ModelSerializer):
 #     class Meta:
@@ -22,7 +57,7 @@ from .models import (
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups','name','identity']
+        fields = ['url', 'username', 'email', 'groups', 'name', 'identity']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):

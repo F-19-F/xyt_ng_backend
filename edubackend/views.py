@@ -1,13 +1,58 @@
 from django.shortcuts import render
 
 # Create your views here.
-from django.contrib.auth.models import  Group
+from django.contrib.auth.models import Group
 from rest_framework import viewsets
 from rest_framework import permissions
-from edubackend.serializers import UserSerializer,GroupSerializer
-from .models import User
+from edubackend.serializers import (
+    UserSerializer,
+    GroupSerializer,
+    CourseSerializer,
+    EduClassSerializer,
+    PeopleClassSerializer,
+    WorkSerializer,
+    AnswerSerializer,
+    ScoreSerializer
+)
+from .models import (
+    User,
+    Course,
+    EduClass,
+    PeopleClass,
+    Work,
+    Answer,
+    Score
+)
 
 
+class CourseViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseSerializer
+
+
+class EduClassViewSet(viewsets.ModelViewSet):
+    queryset = EduClass.objects.all()
+    serializer_class = EduClassSerializer
+
+
+class PeopleClassViewSet(viewsets.ModelViewSet):
+    queryset = PeopleClass.objects.all()
+    serializer_class = PeopleClassSerializer
+
+
+class WorkViewSet(viewsets.ModelViewSet):
+    queryset = Work.objects.all()
+    serializer_class = WorkSerializer
+
+
+class AnswerViewSet(viewsets.ModelViewSet):
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializer
+
+
+class ScoreViewSet(viewsets.ModelViewSet):
+    queryset = Score.objects.all()
+    serializer_class = ScoreSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
