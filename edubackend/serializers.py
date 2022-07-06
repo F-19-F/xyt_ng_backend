@@ -48,10 +48,6 @@ class ScoreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# class userStudentSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = userStudents
-#         fields = '__all__'
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
