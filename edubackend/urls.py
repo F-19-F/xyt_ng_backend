@@ -3,7 +3,7 @@ from rest_framework import routers
 from edubackend import views
 
 router = routers.DefaultRouter()
-router.register(r'users', views.userStudentViewset)
+# router.register(r'users', views.userStudentViewset)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

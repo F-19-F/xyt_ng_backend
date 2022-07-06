@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -101,9 +102,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+AUTH_USER_MODEL = 'edubackend.User'
 
-TIME_ZONE = 'UTC'
+LANGUAGE_CODE = 'zh-hans'
+
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
@@ -121,3 +124,6 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10
 }
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# simple_ui
+SIMPLEUI_HOME_INFO = False
+SIMPLEUI_ANALYSIS = False
