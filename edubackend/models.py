@@ -59,7 +59,17 @@ class Course(models.Model):
     def __str__(self):
         return  f"{self.name}-{self.create_teacher.name}"
 
+class ClassRoom(models.Model):
+    id = models.BigAutoField(primary_key=True,null=False)
+    buildingname = models.CharField(max_length=50,verbose_name="教学楼")
+    roomname = models.CharField(max_length=50,verbose_name="教室名")
 
+    class Meta:
+        verbose_name = "教室"
+
+
+    def __str__(self):
+        return f"{self.buildingname}-{self.roomname}"
 
 class EduClass(models.Model):
     class WeekChoice(models.IntegerChoices):
@@ -77,6 +87,7 @@ class EduClass(models.Model):
     begin_in_day = models.IntegerField(verbose_name="开始节数")
     end_in_day = models.IntegerField(verbose_name="结束节数")
     whichday = models.IntegerField(verbose_name="星期几",choices=WeekChoice.choices)
+    classroom = models.ForeignKey(ClassRoom,on_delete=models.SET_NULL,blank=True,null=True,verbose_name="教学教室")
     class Meta:
         verbose_name="教学班"
 
@@ -111,6 +122,25 @@ class Answer(models.Model):
         verbose_name="作业提交"
     def __str__(self):
         return f"{self.people}-{self.work}"
+
+
+
+
+class Exam(models.Model):
+    id = models.BigAutoField(primary_key=True,null=False)
+    educlass = models.ForeignKey(EduClass,on_delete=models.CASCADE,verbose_name="对应教学班")
+    classroom = models.ForeignKey(ClassRoom,on_delete=models.CASCADE,verbose_name="考试所在教室")
+    name = models.CharField(max_length=50,verbose_name="考试名")
+    begin_time = models.DateTimeField(verbose_name="考试开始时间")
+    end_time = models.DateTimeField(verbose_name="考试结束时间")
+
+
+    class Meta:
+        verbose_name = "考试"
+
+
+    def __str__(self):
+        return f"{self.name}-{str(self.classroom)}"
 
 
 class Score(models.Model):

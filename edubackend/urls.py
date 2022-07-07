@@ -9,7 +9,8 @@ router.register(r'work',views.WorkViewSet)
 router.register(r'answer',views.AnswerViewSet)
 router.register(r'score',views.ScoreViewSet)
 router.register(r'user', views.UserViewSet)
-import  dj_rest_auth
+router.register(r'exam',views.ExamViewSet)
+router.register(r'classroom', views.ClassRoomViewSet)
 # router.register(r'users', views.userStudentViewset)
 
 # Wire up our API using automatic URL routing.

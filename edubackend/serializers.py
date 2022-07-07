@@ -8,18 +8,44 @@ from .models import (
     PeopleClass,
     Work,
     Answer,
-    Score
+    Score,
+    ClassRoom,
+    Exam
 )
 
 
 class CourseSerializer(serializers.ModelSerializer):
     # def to_representation(self, instance:Course):
     #     origin=  super(CourseSerializer, self).to_representation(instance)
-    #     origin["xm"] = instance.create_teacher.name
-    #     origin["xf"] = instance.credit
+    #     # zcd = [i for i in range(instance.educlass.week_begin,instance.educlass.week_end + 1)]
+    #     extend_info = {
+    #         # 'kcmc': instance.name,
+    #         # 'cdmc': '默认地点',
+    #         'xm': instance.create_teacher.name,
+    #         # 'zcdd': len(zcd),
+    #         # 'zcd': zcd,
+    #         # "xqj": instance.educlass.whichday,
+    #         # 'jcs': instance.educlass.begin_in_day,
+    #         # 'cxjs': instance.educlass.end_in_day - instance.educlass.begin_in_day,
+    #         "xf": instance.credit,
+    #         'bg': 'blue'
+    #     }
+    #     origin.update(extend_info)
     #     return origin
     class Meta:
         model = Course
+        fields = '__all__'
+
+
+class ClassRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClassRoom
+        fields = '__all__'
+
+
+class ExamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Exam
         fields = '__all__'
 
 
@@ -53,12 +79,10 @@ class ScoreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
-
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups', 'name', 'identity','pls','cls']
+        fields = ['url', 'username', 'email', 'groups', 'name', 'identity', 'pls', 'cls']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
