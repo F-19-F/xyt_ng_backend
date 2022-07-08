@@ -197,6 +197,22 @@ class WorkViewSet(viewsets.ModelViewSet):
     queryset = Work.objects.all()
     serializer_class = WorkSerializer
 
+    @action(detail=False)
+    def mywork(self,request,*args,**kwargs):
+        objs = self.get_queryset()
+        res = [{
+            "id":work.pk,
+            "title":work.title,
+            "from":work.educlass.course.name,
+            "deadline":"截止时间"
+        } for work in objs]
+        return Response(res)
+
+    def get_queryset(self):
+        user = self.request.user
+        objs = Work.objects.filter(educlass__peopleclass__student=user)
+        return objs
+
 
 class AnswerViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
