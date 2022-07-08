@@ -84,6 +84,10 @@ class CourseViewSet(viewsets.ModelViewSet):
 class EduClassViewSet(viewsets.ModelViewSet):
     queryset = EduClass.objects.all()
     serializer_class = EduClassSerializer
+    @action(detail=False)
+    def courseselect(self, request: Request, *args, **kwargs):
+        objs = EduClass.objects.all()
+
 
 
 class ClassRoomViewSet(viewsets.ModelViewSet):

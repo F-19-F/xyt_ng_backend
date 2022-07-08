@@ -47,7 +47,7 @@ class CourseModelAdmin(admin.ModelAdmin):
 @admin.register(EduClass)
 class EduClassModelAdmin(admin.ModelAdmin):
     # EduClass.
-    list_display = ('course', 'whichday', 'begin_in_day', 'end_in_day','classroom')
+    list_display = ('course','xq','xnm', 'whichday', 'begin_in_day', 'end_in_day','classroom')
 
 
 @admin.register(PeopleClass)

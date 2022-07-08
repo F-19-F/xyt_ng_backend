@@ -81,6 +81,9 @@ class EduClass(models.Model):
         Friday = 5,"星期五"
         Saturday = 6,"星期六"
         Sunday = 7,"星期天"
+    class XqChoice(models.IntegerChoices):
+        one = 1,"第一学期",
+        two = 2,"第二学期"
     id = models.BigAutoField(primary_key=True, null=False)
     course = models.ForeignKey(Course,on_delete=models.CASCADE,verbose_name="对应课程")
     week_begin = models.IntegerField(verbose_name="开始周")
@@ -88,6 +91,8 @@ class EduClass(models.Model):
     begin_in_day = models.IntegerField(verbose_name="开始节数")
     end_in_day = models.IntegerField(verbose_name="结束节数")
     whichday = models.IntegerField(verbose_name="星期几",choices=WeekChoice.choices)
+    xq = models.IntegerField(verbose_name="学期",choices=XqChoice.choices)
+    xnm = models.CharField(verbose_name="学年名",max_length=50)
     classroom = models.ForeignKey(ClassRoom,on_delete=models.SET_NULL,blank=True,null=True,verbose_name="教学教室")
     class Meta:
         verbose_name="教学班"
