@@ -23,8 +23,8 @@ from .models import (
 # admin.site.register(User, UserAdmin)
 @admin.register(User)
 class UserModelAdmin(UserAdmin):
-    list_display = ("username", "name", "pls", "cls", "identity", "is_staff")
-    list_editable = ("name", "pls", "cls", "identity")
+    list_display = ("username", "name", "phone","pls", "cls", "identity",)
+    list_editable = ("name", "pls", "cls", "phone")
     list_filter = ("identity", "is_superuser")
     search_fields = ("name", "username")
     add_fieldsets = (

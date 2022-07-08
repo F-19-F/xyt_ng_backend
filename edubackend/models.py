@@ -32,6 +32,7 @@ class User(AbstractUser):
     # num = models.CharField(max_length=30,null=True,verbose_name="学号/工号")
     pls = models.CharField(max_length=30,null=True,verbose_name="专业",blank=True)
     cls = models.CharField(max_length=30,null=True, verbose_name="班级",blank=True)
+    phone = models.CharField(max_length=20,null=True,verbose_name="手机号",blank=True)
     class Meta(AbstractUser.Meta):
         pass
 

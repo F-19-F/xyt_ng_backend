@@ -82,7 +82,7 @@ class ScoreSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'groups', 'name', 'identity', 'pls', 'cls']
+        fields = ['url', 'username', 'email', 'groups', 'name', 'identity', 'pls', 'cls','phone']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
