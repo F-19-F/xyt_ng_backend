@@ -92,7 +92,7 @@ class EduClass(models.Model):
     end_in_day = models.IntegerField(verbose_name="结束节数")
     whichday = models.IntegerField(verbose_name="星期几",choices=WeekChoice.choices)
     xq = models.IntegerField(verbose_name="学期",choices=XqChoice.choices)
-    xnm = models.CharField(verbose_name="学年名",max_length=50)
+    xn = models.IntegerField(verbose_name="学年")
     classroom = models.ForeignKey(ClassRoom,on_delete=models.SET_NULL,blank=True,null=True,verbose_name="教学教室")
     class Meta:
         verbose_name="教学班"

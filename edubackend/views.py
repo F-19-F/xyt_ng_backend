@@ -1,15 +1,18 @@
 import django
+import rest_framework.response
 from django.shortcuts import render
 
 # Create your views here.
 from django.contrib.auth.models import Group
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from django.http.response import JsonResponse
-from datetime import datetime,timezone,timedelta
+from datetime import datetime, timezone, timedelta
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from edubackend.serializers import (
@@ -36,6 +39,7 @@ from .models import (
     Exam
 )
 
+
 def getCsrfToken(request):
     res = {
         'csrftoken': django.middleware.csrf.get_token(request)
@@ -43,19 +47,15 @@ def getCsrfToken(request):
     return JsonResponse(res)
 
 
-
-
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-
 
     # 限制
     # def get_queryset(self):
     #     if self.request.user.is_superuser:
     #         return Course.objects.all()
     #     return Course.objects.filter(self.request.user)
-
 
     @action(detail=False)
     def mycourse(self, request: Request, *args, **kwargs):
@@ -84,10 +84,48 @@ class CourseViewSet(viewsets.ModelViewSet):
 class EduClassViewSet(viewsets.ModelViewSet):
     queryset = EduClass.objects.all()
     serializer_class = EduClassSerializer
+
     @action(detail=False)
     def courseselect(self, request: Request, *args, **kwargs):
-        objs = EduClass.objects.all()
+        try:
+            xqm = int(request.query_params['xqm'])
+            xnm = int(request.query_params['xnm'])
+        except MultiValueDictKeyError:
+            return Response({}, status=404)
+        except Exception as e:
+            return Response({}, status=404)
 
+        if xqm and xnm:
+            objs = EduClass.objects.filter(xq=xqm, xn=xnm)
+        else:
+            return Response([])
+        res = []
+        for educlass in objs:
+            peopleclass_set = educlass.peopleclass_set.filter(student=self.request.user)
+            selected = False
+            peopleid = -1
+            if len(peopleclass_set) > 0:
+                selected = True
+                peopleid = peopleclass_set.all()[0].id
+            res.append({
+                "jxb_id": educlass.pk,
+                "kc": educlass.course.name,
+                "xf": educlass.course.credit,
+                "loc": str(educlass.classroom),
+                "teacher": educlass.course.create_teacher.name,
+                "selected": selected,
+                "pcs_id":peopleid
+            })
+        # res= [{
+        #     "jxb_id":educlass.pk,
+        #     "kc":educlass.course.name,
+        #     "xf":educlass.course.credit,
+        #     "loc":str(educlass.classroom),
+        #     "teacher":educlass.course.create_teacher.name,
+        #     "selected":True if len(educlass.peopleclass_set.filter(student=self.request.user)) >0 else False
+        # }for educlass in objs]
+
+        return Response(res)
 
 
 class ClassRoomViewSet(viewsets.ModelViewSet):
@@ -99,6 +137,7 @@ class ExamViewSet(viewsets.ModelViewSet):
     queryset = Exam.objects.all()
     serializer_class = ExamSerializer
     td_bj = timedelta(hours=8)
+
     @action(detail=False)
     def myexam(self, request: Request, *args, **kwargs):
         user = self.request.user
@@ -108,29 +147,49 @@ class ExamViewSet(viewsets.ModelViewSet):
         for exam in exams:
             # 硬编码了
             begin = datetime.utcfromtimestamp(exam.begin_time.timestamp())
-            begin = begin+self.td_bj
-            if begin < now :
+            begin = begin + self.td_bj
+            if begin < now:
                 continue
             res.append({
-                "kcmc":exam.educlass.course.name,
-                "kssj":begin.strftime("%Y-%m-%d %H:%M"),
-                "rday":(begin - now).days,
-                "cdbh":str(exam.classroom)
-        })
+                "kcmc": exam.educlass.course.name,
+                "kssj": begin.strftime("%Y-%m-%d %H:%M"),
+                "rday": (begin - now).days,
+                "cdbh": str(exam.classroom)
+            })
         return Response(res)
 
 
-
 class PeopleClassViewSet(viewsets.ModelViewSet):
-    authentication_classes = (TokenAuthentication,)
+    # authentication_classes = (TokenAuthentication,)
     queryset = PeopleClass.objects.all()
     serializer_class = PeopleClassSerializer
 
+    def create(self, request, *args, **kwargs):
+        user = self.request.user
+        try:
+            uid = int(request.data['student'])
+            eid = int(request.data['educlass'])
+        except:
+            raise ValidationError(detail="参数错误")
+        # 只允许本用户添加属于自己课程
+        if (uid != user.id):
+            raise ValidationError(detail="不允许代替选课!")
+        exist_objs = PeopleClass.objects.filter(student=user, educlass__id=eid)
+        if len(exist_objs) > 0:
+            raise ValidationError(detail="你已经选过这门课了，不可以重复选课")
+        return super().create(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.request.user
+        ins = self.get_object()
+        # ins = PeopleClass()
+        if ins.student.id != user.id:
+            raise ValidationError(detail="禁止删除不属于你的课程")
+        return super().destroy(request, *args, **kwargs)
+
     def get_queryset(self):
         user = self.request.user
-        # print(user)
         objs = PeopleClass.objects.filter(student=user)
-        # print(objs)
         return objs
 
 
