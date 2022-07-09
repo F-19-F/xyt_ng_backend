@@ -82,10 +82,24 @@ class CourseViewSet(viewsets.ModelViewSet):
             res.append(course)
         return Response(res)
 
+    @action(detail=False)
+    def getcoursebyme(self,request:Request,*args,**kwargs):
+        user = self.request.user
+        # 学生无权限获取
+        if user.identity != User.IdentityChoice.TEACHER:
+            raise ValidationError(detail="非老师无法获取")
+        # res = []
+        objs = Course.objects.filter(create_teacher=user)
+        r = CourseSerializer(objs,many=True)
+        return Response(r.data)
+
+
 
 class EduClassViewSet(viewsets.ModelViewSet):
     queryset = EduClass.objects.all()
     serializer_class = EduClassSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['course','xq','xn']
 
     @action(detail=False)
     def courseselect(self, request: Request, *args, **kwargs):
