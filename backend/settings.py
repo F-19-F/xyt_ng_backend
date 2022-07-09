@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     # 主app
     'edubackend',
     # token认证
-    'dj_rest_auth'
+    'dj_rest_auth',
+    # url过滤后端
+    'django_filters'
 
 ]
 

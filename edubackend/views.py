@@ -15,6 +15,8 @@ from django.http.response import JsonResponse
 from datetime import datetime, timezone, timedelta
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
+# rest_framework url过滤
+from django_filters.rest_framework import DjangoFilterBackend
 from edubackend.serializers import (
     UserSerializer,
     GroupSerializer,
@@ -200,12 +202,14 @@ class WorkViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def mywork(self,request,*args,**kwargs):
         objs = self.get_queryset()
-        res = [{
-            "id":work.pk,
-            "title":work.title,
-            "from":work.educlass.course.name,
-            "deadline":"截止时间"
-        } for work in objs]
+        res  = []
+        for work in objs:
+            res.append({
+                "id":work.pk,
+                "title":work.title,
+                "from":work.educlass.course.name,
+                "deadline":"截止时间"
+            } )
         return Response(res)
 
     def get_queryset(self):
@@ -217,6 +221,22 @@ class WorkViewSet(viewsets.ModelViewSet):
 class AnswerViewSet(viewsets.ModelViewSet):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
+    filter_backends =  [DjangoFilterBackend]
+    filterset_fields = ['work']
+    def create(self, request, *args, **kwargs):
+        user = self.request.user
+        try:
+            uid = int(request.data['people'])
+            wid = int(request.data['work'])
+        except:
+            raise ValidationError(detail="参数错误")
+        # 只允许本用户添加属于自己课程
+        if (uid != user.id):
+            raise ValidationError(detail="不允许代替提交作业")
+        exist_objs =  Answer.objects.filter(people=user,work__id=wid)
+        if len(exist_objs) > 0:
+            raise ValidationError(detail="你已经提交过作业了,不能重复提交!")
+        return super().create(request, *args, **kwargs)
 
 
 class ScoreViewSet(viewsets.ModelViewSet):
