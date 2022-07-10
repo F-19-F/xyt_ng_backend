@@ -59,6 +59,17 @@ class PeopleClassSerializer(serializers.ModelSerializer):
     class Meta:
         model = PeopleClass
         fields = '__all__'
+    def to_representation(self, instance):
+        orig = super().to_representation(instance)
+        # o = PeopleClass()
+        extend = {
+            "name":instance.student.name,
+            "cls":instance.student.cls,
+            "pls":instance.student.pls
+        }
+        orig.update(extend)
+        return orig
+
 
 
 class WorkSerializer(serializers.ModelSerializer):

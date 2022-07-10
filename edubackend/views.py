@@ -179,6 +179,9 @@ class PeopleClassViewSet(viewsets.ModelViewSet):
     # authentication_classes = (TokenAuthentication,)
     queryset = PeopleClass.objects.all()
     serializer_class = PeopleClassSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['educlass']
+
 
     def create(self, request, *args, **kwargs):
         user = self.request.user
@@ -199,13 +202,17 @@ class PeopleClassViewSet(viewsets.ModelViewSet):
         user = self.request.user
         ins = self.get_object()
         # ins = PeopleClass()
-        if ins.student.id != user.id:
+        if ins.student.id != user.id and user.identity == User.IdentityChoice.STUDENT:
             raise ValidationError(detail="禁止删除不属于你的课程")
         return super().destroy(request, *args, **kwargs)
 
     def get_queryset(self):
         user = self.request.user
-        objs = PeopleClass.objects.filter(student=user)
+        if user.identity==User.IdentityChoice.STUDENT:
+            objs = PeopleClass.objects.filter(student=user)
+        else:
+            objs = PeopleClass.objects.filter(educlass__course__create_teacher=user)
+
         return objs
 
 
@@ -226,10 +233,15 @@ class WorkViewSet(viewsets.ModelViewSet):
             } )
         return Response(res)
 
+
     def get_queryset(self):
         user = self.request.user
-        objs = Work.objects.filter(educlass__peopleclass__student=user)
+        if user.identity == User.IdentityChoice.STUDENT or user.identity == User.IdentityChoice.ADMIN:
+            objs = Work.objects.filter(educlass__peopleclass__student=user)
+        else:
+            objs = Work.objects.filter(educlass__course__create_teacher=user)
         return objs
+
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
