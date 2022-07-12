@@ -11,12 +11,14 @@ router.register(r'score',views.ScoreViewSet)
 router.register(r'user', views.UserViewSet)
 router.register(r'exam',views.ExamViewSet)
 router.register(r'classroom', views.ClassRoomViewSet)
-# router.register(r'users', views.userStudentViewset)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    # restful接口
     path('', include(router.urls)),
+    # csrf防护接口
     path('getCsrftoken/',views.getCsrfToken),
+    # 登录接口
     path('auth/', include('dj_rest_auth.urls')),
 ]

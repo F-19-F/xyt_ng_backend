@@ -53,12 +53,6 @@ class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
-    # 限制
-    # def get_queryset(self):
-    #     if self.request.user.is_superuser:
-    #         return Course.objects.all()
-    #     return Course.objects.filter(self.request.user)
-
     @action(detail=False)
     def mycourse(self, request: Request, *args, **kwargs):
         user = self.request.user
@@ -81,7 +75,7 @@ class CourseViewSet(viewsets.ModelViewSet):
             }
             res.append(course)
         return Response(res)
-
+    # 获取老师发布的课程
     @action(detail=False)
     def getcoursebyme(self,request:Request,*args,**kwargs):
         user = self.request.user
